@@ -1,0 +1,39 @@
+{
+  "Inverter": [
+    {
+      "found": true,
+      "manufacturer": null,
+      "model": null,
+      "evidence_note": "Manufacturer/model not specified; see SLD and equipment labels:  ",
+      "page_refs": [
+        2,
+        3,
+        4
+      ]
+    }
+  ],
+  "Module": [
+    {
+      "found": true,
+      "manufacturer": null,
+      "model": null,
+      "evidence_note": "Module make/model not specified; only generic PV MODULES and string depiction shown:  ",
+      "page_refs": [
+        2,
+        3
+      ]
+    }
+  ],
+  "Racking System": [
+    {
+      "found": true,
+      "manufacturer": "SNAPNRACK",
+      "model": "ULTRA RAIL",
+      "evidence_note": "ULTRA RAIL shown; attachment hardware SNAPNRACK SPEEDSEAL MOUNT noted.  ",
+      "page_refs": [
+        6,
+        7
+      ]
+    }
+  ]
+}
