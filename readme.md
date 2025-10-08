@@ -1,5 +1,18 @@
 # Project README
 
+## 📂 File Index
+All scripts demonstrate API communication with the OpenAI GPT-5 language model:
+
+## dev_scripts/
+
+00_env_check_final.py – Minimal example to verify environment setup and API connectivity.
+
+01_pdf_upload_final.py – Upload PDF via File API and run a simple “what’s in the PDF?” prompt.
+
+02_extract_equipment_wip.py – Prompt for manufacturer and model of each equipment; outputs JSON as text. (Currently slow, raises NoneType error.)
+
+03_validate_equipment_pydantic_wip.py – Parses JSON text into a Pydantic object and saves as structured JSON. Works, but output accuracy needs prompt refinement. (Also slow.)
+
 ## 📦 Prerequisites
 - Python 3.11+
 - Conda (recommended for environment management)
@@ -62,17 +75,3 @@ Run on terminal:
 
 ---
 
-## 📂 File Index
-All scripts demonstrate API communication with the OpenAI GPT-5 language model:
-
-dev_scripts/
-- v0.py – Minimal example to verify environment setup and API connectivity.
-
-- v1.py – Upload PDF file via File API. Basic prompt (what's in the PDF?).
-
-- v2_WIP.py – Still a single prompt but more elaborated: Asks for the manufacturer and model of each equipment. Provides a json as an output. But in the form of text. Takes a while to run. 
-    Traceback (most recent call last):
-        File "/Users/pbotin/Documents/SolarAPP_Foundation/PT2/Test 2/v2.py", line 18, in <module>
-    TypeError: 'NoneType' object is not subscriptable
-
-- v3_WIP.py - Parse the json text into a pydantic object and save as a JSON. It works, but the provided info is not accurate, so it needs prompt refinement. Takes a while to run. 
