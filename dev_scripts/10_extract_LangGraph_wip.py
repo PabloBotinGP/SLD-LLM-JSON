@@ -20,7 +20,6 @@ class EquipmentEntry(BaseModel):
     manufacturer: Optional[str] = None
     model: Optional[str] = None
     evidence_note: Optional[str] = None
-    page_refs: List[int]
 
 class ExtractionResult(BaseModel):
     inverter: Optional[List[EquipmentEntry]] = Field(default=None, alias="Inverter", max_length=1)
@@ -41,11 +40,27 @@ def call_llm(state):
     try:
         # Use the same prompt ID from your working extraction script
         response = client.responses.parse(
-            model="gpt-5",
             prompt={
                 "id": "pmpt_68d3321897f481979180ca9152284cd00a7317fbe81972f1",
-                "version": "1"
+                "version": "3"
             },
+            input=[{
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_image",
+                        "file_id": "file-F5VD9dv5sTTeFnZrn4AtHF",
+                    },
+                    {
+                        "type": "input_image",
+                        "file_id": "file-2WwbeLWasaJtpQNqx88XYq",
+                    },
+                    {
+                        "type": "input_file",
+                        "file_id": "file-Btvihbtetzycu5yNUnQ39d"
+                    }
+                ],
+            }],
             # Enforce structured JSON output using Pydantic model
             text_format=ExtractionResult
         )
@@ -126,7 +141,6 @@ elif "extraction_result" in response and response["extraction_result"]:
                 print(f"   Model: {equipment.model}")
             if equipment.evidence_note:
                 print(f"   Note: {equipment.evidence_note}")
-            print(f"   Pages: {equipment.page_refs}")
     
     # Save to JSON file
     if "json_output" in response:
