@@ -44,6 +44,12 @@ def render(pdf_path, dpi=300, pages=None, grayscale=False):
     page_list = parse_pages(pages, n)
 
     base, _ = os.path.splitext(pdf_path)
+    folder_name = base
+
+    # Create a new folder named after the PDF file
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
     zoom = dpi / 72.0
     mat = fitz.Matrix(zoom, zoom)
 
@@ -60,12 +66,19 @@ def render(pdf_path, dpi=300, pages=None, grayscale=False):
             pix = fitz.Pixmap(fitz.csGRAY, pix)
 
         if single_output:
-            out_path = f"{base}.png"
+            out_path = os.path.join(folder_name, f"{os.path.basename(base)}.png")
         else:
-            out_path = f"{base}_p{page_num:02d}.png"
+            out_path = os.path.join(folder_name, f"{os.path.basename(base)}_p{page_num:02d}.png")
 
         pix.save(out_path)
         saved.append(out_path)
+
+    # Save the original PDF into the folder
+    pdf_copy_path = os.path.join(folder_name, f"{os.path.basename(base)}.pdf")
+    if not os.path.exists(pdf_copy_path):
+        with open(pdf_path, "rb") as original_pdf:
+            with open(pdf_copy_path, "wb") as copy_pdf:
+                copy_pdf.write(original_pdf.read())
 
     doc.close()
     return saved
