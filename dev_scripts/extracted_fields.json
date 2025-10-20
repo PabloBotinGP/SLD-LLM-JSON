@@ -2,38 +2,25 @@
   "Inverter": [
     {
       "found": true,
-      "manufacturer": "SOLAREDGE",
-      "model": null,
-      "evidence_note": "Only 'SOLAREDGE' referenced on PV3 and PV8; no specific inverter model shown.  ",
-      "page_refs": [
-        3,
-        9
-      ]
+      "manufacturer": "SOLAR EDGE",
+      "model": "SE3800H - USMN",
+      "evidence_note": null
     }
   ],
   "Module": [
     {
-      "found": false,
-      "manufacturer": null,
-      "model": null,
-      "evidence_note": "No module make/model shown on PV set; modules appear generically on PV2/PV3.  ",
-      "page_refs": [
-        2,
-        3
-      ]
+      "found": true,
+      "manufacturer": "HANWHA Q-CELLS",
+      "model": "Q.PEAK DUO BLK ML-G10+ 410",
+      "evidence_note": null
     }
   ],
   "Racking System": [
     {
       "found": true,
       "manufacturer": "SNAPNRACK",
-      "model": "ROOF MOUNT SYSTEM",
-      "evidence_note": "PV5 shows 'SNAPNRACK ROOF MOUNT SYSTEM'; attachments SpeedSeal & Ultra Rail Mount noted. Letter lists RL Universal/UR systems.  ",
-      "page_refs": [
-        6,
-        7,
-        12
-      ]
+      "model": "SNAPNRACK ULTRA",
+      "evidence_note": "SnapNrack Ultra rail system with SpeedSeal mount per structural letter and BOM sheet"
     }
   ]
 }

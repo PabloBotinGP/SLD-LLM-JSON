@@ -1,0 +1,6 @@
+openai
+pydantic
+langgraph
+typing-extensions
+boto3
+requests
