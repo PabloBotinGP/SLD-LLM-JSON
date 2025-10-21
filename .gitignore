@@ -14,3 +14,6 @@ Thumbs.db
 
 # Secrets
 .env
+
+# Data files 
+.json 

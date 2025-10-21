@@ -2,7 +2,6 @@
 
 This index documents the Python scripts and useful files in this folder and shows example commands to run them from a terminal (zsh). Most scripts assume Python 3.11+ and may rely on packages listed in `requirements.txt`. Some scripts call the OpenAI APIs and require `OPENAI_API_KEY` to be set in the environment.
 
-> Tip: run `python3 -m pip install -r requirements.txt` in a virtual environment before running scripts that need dependencies.
 
 ## Environment & general notes
 
@@ -17,218 +16,94 @@ This index documents the Python scripts and useful files in this folder and show
 
 ---
 
-## Files and how to run them
+# Dev Scripts Index
 
-### `run_extraction.py`
-Purpose: The main extraction module (renamed from `31_run_extraction_wip.py`). Exposes `run_extraction(prompt_id, file_id, image_ids=None, dry_run=False)` and also has a CLI.
+This file documents the active development scripts in `dev_scripts/`, shows simple run examples, and lists older/experimental scripts under the Script Archive section.
 
-How to run (CLI):
+Quick environment notes
+
+- Activate the Python environment that contains the project's dependencies and the `OPENAI_API_KEY` before running the scripts:
 
 ```bash
-# Dry-run with embedded defaults
-python3 run_extraction_branch1_v0.py --dry-run
-
-# Provide explicit prompt and file ids
-python3 run_extraction_branch1_v0.py pmpt_XXXXXXXX file-YYYYYYYY file-img1 file-img2
+conda activate openai-env
 ```
 
-How to import and call from Python:
+- Working directory for the examples below is the `dev_scripts` folder:
 
-```python
-from run_extraction_branch1_v0 import run_extraction
-res = run_extraction("pmpt_...", "file-...", image_ids=["file-img1","file-img2"], dry_run=True)
-print(res)
-```
-
-Notes: When not in dry-run the script will call the OpenAI Responses API and return parsed Pydantic output (`ExtractionResult`). Ensure `OPENAI_API_KEY` is set.
+  /Users/pbotin/Documents/SolarAPP_Foundation/PT2/API/dev_scripts
 
 ---
 
-### `run_extraction_wip_module.py`
-Purpose: Alternative extraction module (renamed from `11_run_extraction_wip.py`). Also exposes `run_extraction()` for programmatic use and includes a CLI for compatibility.
+## Active scripts (in this folder)
 
-How to run (CLI):
+### 1. `laravel.py`
+Purpose: Primary wrapper intended to be called by Laravel (via AWS Lambda or directly) to run extraction jobs. It dynamically loads a target extraction script (for example `run_extraction.py`) and calls its `run_extraction(...)` entrypoint. Also exposes `lambda_handler(event, context)` for direct Lambda use.
 
-```bash
-python3 run_extraction_wip_module.py --dry-run
-python3 run_extraction_wip_module.py <prompt_id> <file_id> [image_id1 image_id2]
-```
-
-How to import:
-
-```python
-from run_extraction_wip_module import run_extraction
-run_extraction("pmpt_...", "file-...", image_ids=[...], dry_run=True)
-```
-
----
-
-### `laravel_lambda_wrapper.py`
-Purpose: Lambda/CLI wrapper previously provided in `30_Laravel_call.py`. Helps run extraction scripts either by importing them (in-process) or invoking them as subprocesses. Also implements `lambda_handler(event, context)` for AWS Lambda.
-
-How to run (CLI):
+How to run locally (dry-run example):
 
 ```bash
-# Use the wrapper to import and run a script in-process
-python3 laravel_lambda_wrapper.py --script run_extraction_branch1_v0.py --prompt_id pmpt_... --file_id file-... --dry-run
+# run the wrapper and import+call run_extraction in-process
+python laravel.py --script run_extraction.py --dry-run
 
-# Run the target script via a separate python executable (venv)
-python3 laravel_lambda_wrapper.py --python-exec /path/to/venv/bin/python --script run_extraction_branch1_v0.py --prompt_id pmpt_... --file_id file-...
+# provide explicit prompt and file ids (requires OPENAI_API_KEY in env when not dry-run)
+python laravel.py --script run_extraction.py --prompt-id pmpt_... --file-id file-...
 ```
 
-How to call as a Lambda locally (example payload):
+How to call from Python (example payload for Lambda-style invocation):
 
 ```python
-from laravel_lambda_wrapper import lambda_handler
-payload = {"script": "run_extraction_branch1_v0.py", "prompt_id": "pmpt_...", "file_id": "file-...", "image_ids": [], "dry_run": True}
+from laravel import lambda_handler
+payload = {
+    "script": "run_extraction.py",
+    "prompt_id": "pmpt_...",
+    "file_id": "file-...",
+    "image_ids": [],
+    "dry_run": True
+}
 resp = lambda_handler(payload, None)
 print(resp)
 ```
 
+Notes:
+- Use `--dry-run` for a fast local check that imports succeed and the wrapper wiring is correct.
+- For Lambda deployments, ensure `OPENAI_API_KEY` is available.
+
 ---
 
-### `langgraph_workflow_branch1_v0.py`
-Purpose: The LangGraph workflow definition extracted from the original LangGraph script. Provides the `app` compiled workflow and the `call_llm` step wiring (used internally by the extraction modules).
+### 2. `run_extraction.py`
+Purpose: Core extraction logic and programmatic entrypoint. Exposes a function `run_extraction(prompt_id, file_id, image_ids=None, dry_run=False)` and a CLI. When run (non-dry-run) it calls the OpenAI API and writes output JSON to `dev_scripts/extracted_fields.json` and a UTC timestamped copy.
 
-How to use:
+How to run (examples):
+
+```bash
+# dry-run using embedded defaults
+python run_extraction.py --dry-run
+
+# explicit run (requires OPENAI_API_KEY in env)
+python run_extraction.py --prompt-id pmpt_... --file-id file-...
+```
+
+How to call from Python:
 
 ```python
-from langgraph_workflow_branch1_v0 import app
-# app.invoke expects the state/prompt/input structure used by LangGraph
-```
-
-Usually this module is used indirectly through the `run_extraction_*` modules above.
-
----
-
-### `env_check_example.py`
-Purpose: Small utility to interactively ensure required environment variables (like `OPENAI_API_KEY`) are present. Useful for local development.
-
-Run it:
-
-```bash
-python3 env_check_example.py
+from run_extraction import run_extraction
+res = run_extraction("pmpt_...", "file-...", image_ids=["file-img1"], dry_run=True)
+print(res)
 ```
 
 ---
 
-### `upload_pdf_tool.py`
-Purpose: Script for uploading PDFs (used by earlier workflows). The file likely contains a CLI to upload/prepare files for the extraction pipeline.
-
-Run it (example):
-
-```bash
-python3 upload_pdf_tool.py path/to/file.pdf
-```
+### 3. `render.py` 
+Rendering functionality used for producing images from PDFs.
 
 ---
 
-### `quick_extract_example.py`
-Purpose: Small convenience script demonstrating extraction with fixed defaults (good for quick tests).
+## Script Archive (in Script_Archive folder)
+The following scripts were experimental or earlier variants; they have been moved to `Script_Archive/` at the repository root. Each entry below is a short note about intent so you can find them quickly.
 
-Run it:
+- `run_extraction_wip_module.py` — An earlier work-in-progress extraction module. Kept for reference; superseded by `run_extraction.py`.
 
-```bash
-python3 quick_extract_example.py
-```
+- `laravel_lambda_wrapper.py` — Previous (longer) wrapper implementation with subprocess fallbacks. Kept for reference; the active wrapper is `laravel.py`.
 
----
+- `langgraph_workflow_branch1_v0.py` — LangGraph workflow export used by the extraction code. Useful if you need to inspect or recompile the workflow.
 
-### `parse_and_save_extraction.py`
-Purpose: Utilities to parse extraction results and persist them (for example into `extracted_fields.json`).
-
-Run/Use programmatically:
-
-```python
-from parse_and_save_extraction import parse_and_save
-# call parse_and_save with the parsed data
-```
-
----
-
-### `elm_tree_extraction.py`
-Purpose: Script that performs the ELM tree-based extraction (older approach). Kept for reference.
-
-Run it:
-
-```bash
-python3 elm_tree_extraction.py --dry-run
-```
-
----
-
-### `lambda_handler.py`
-Purpose: Example Lambda entrypoint. If you deploy to AWS Lambda you may set this as the handler.
-
-Run locally (simple invocation):
-
-```python
-from lambda_handler import handler
-resp = handler({"some": "event"}, None)
-```
-
----
-
-### `render.py`, `tree.py`, `utils.py`
-Purpose: utility modules used by different scripts. Import them as needed.
-
-Examples:
-
-```python
-from utils import some_helper
-```
-
----
-
-### `requirements.txt`
-Purpose: Python package dependencies required by the scripts (install into a venv using pip).
-
-Install:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
----
-
-### `README_lambda.md`
-Purpose: Notes about deploying or using the Lambda wrapper. Open and read for details specific to Lambda deployment.
-
----
-
-### `extracted_fields.json`
-Purpose: Example output file produced by the extraction scripts when they save parsed JSON results.
-
----
-
-## Helpful commands
-
-- Run a quick syntax check across all .py files in this folder:
-
-```bash
-python3 -m py_compile *.py
-```
-
-- Run a single module with dry-run (example):
-
-```bash
-OPENAI_API_KEY=test python3 run_extraction_branch1_v0.py --dry-run
-```
-
-- Import and call a function from a script in an interactive Python session:
-
-```bash
-python3 -c "from run_extraction_branch1_v0 import run_extraction; print(run_extraction('pmpt_x','file_y', dry_run=True))"
-```
-
----
-
-If you'd like, I can:
-
-- generate a shorter printable summary, or
-- add example prompt/file IDs used previously (safely redacted), or
-- run a smoke import / python -m py_compile across the folder and report results now.
-
-Tell me which of these you'd like next.
