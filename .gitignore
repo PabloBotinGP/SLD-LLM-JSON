@@ -14,6 +14,6 @@ Thumbs.db
 
 # Secrets
 .env
-
-# Data files 
-.json 
+ 
+# Generated extraction output
+dev_scripts/*.json
