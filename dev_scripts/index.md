@@ -36,17 +36,17 @@ conda activate openai-env
 
 ## Active scripts (in this folder)
 
-### 1. `laravel.py`
+### 1. `lambda_call.py`
 Purpose: Primary wrapper intended to be called by Laravel (via AWS Lambda or directly) to run extraction jobs. It dynamically loads a target extraction script (for example `run_extraction.py`) and calls its `run_extraction(...)` entrypoint. Also exposes `lambda_handler(event, context)` for direct Lambda use.
 
 How to run locally (dry-run example):
 
 ```bash
 # run the wrapper and import+call run_extraction in-process
-python laravel.py --script run_extraction.py --dry-run
+python lambda_call.py --script run_extraction.py --dry-run
 
 # provide explicit prompt and file ids (requires OPENAI_API_KEY in env when not dry-run)
-python laravel.py --script run_extraction.py --prompt-id pmpt_... --file-id file-...
+python lambda_call.py --script run_extraction.py --prompt-id pmpt_... --file-id file-...
 ```
 
 How to call from Python (example payload for Lambda-style invocation):
