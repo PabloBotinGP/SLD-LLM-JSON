@@ -1,3 +1,6 @@
+"""Example extraction runner (renamed from 02_extract_wip.py).
+"""
+
 # Import necessary libraries
 from openai import OpenAI
 
@@ -25,4 +28,3 @@ with open("model_output.txt", "w", encoding="utf-8") as f:
     f.write(output_text)
 
 print("✅ Saved output to model_output.txt")
-

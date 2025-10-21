@@ -1,3 +1,6 @@
+"""Upload PDF and ask model (renamed from 01_upload_pdf_final.py).
+"""
+
 # Import necessary libraries
 import base64
 from openai import OpenAI

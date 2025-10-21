@@ -1,6 +1,9 @@
+"""Parse model responses into Pydantic model and save (renamed from 03_extract_parse_wip.py).
+"""
+
 from openai import OpenAI
 from typing import Optional, List
-from pydantic import BaseModel, Field, ConfigDict, conlist
+from pydantic import BaseModel, Field, ConfigDict
 
 class EquipmentEntry(BaseModel):
     found: bool
@@ -10,9 +13,12 @@ class EquipmentEntry(BaseModel):
     page_refs: List[int]
 
 class ExtractionResult(BaseModel):
-    inverter: Optional[conlist(EquipmentEntry, max_length=1)] = Field(default=None, alias="Inverter")
-    module: Optional[conlist(EquipmentEntry, max_length=1)] = Field(default=None, alias="Module")
-    racking_system: Optional[conlist(EquipmentEntry, max_length=1)] = Field(default=None, alias="Racking System")
+    # Using List[EquipmentEntry] here; original used conlist(..., max_length=1)
+    # to constrain length. If you need that validation, reintroduce conlist in
+    # the type annotations.
+    inverter: Optional[List[EquipmentEntry]] = Field(default=None, alias="Inverter")
+    module: Optional[List[EquipmentEntry]] = Field(default=None, alias="Module")
+    racking_system: Optional[List[EquipmentEntry]] = Field(default=None, alias="Racking System")
 
     model_config = ConfigDict(populate_by_name=True)
 

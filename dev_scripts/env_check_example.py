@@ -1,3 +1,6 @@
+"""Environment check and example runner (renamed from 00_env_check_final.py).
+"""
+
 from agents import Agent, Runner
 import asyncio
 

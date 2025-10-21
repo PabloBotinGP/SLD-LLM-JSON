@@ -1,3 +1,6 @@
+"""ELM/Decision tree-based extraction (renamed from 20_extract_elm_tree_final.py).
+"""
+
 import os
 import networkx as nx
 from openai import OpenAI

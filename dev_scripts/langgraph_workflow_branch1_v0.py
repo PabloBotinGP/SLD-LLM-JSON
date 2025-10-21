@@ -1,3 +1,10 @@
+"""LangGraph workflow (branch 1, version 0).
+
+This file was renamed from `10_extract_LangGraph_wip.py` to provide a
+module-name-friendly filename. The contents are unchanged except the module
+name and this docstring.
+"""
+
 # Pull API key. Necessary? Comment for now. 
 
 import os, getpass
