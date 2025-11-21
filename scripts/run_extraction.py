@@ -197,10 +197,11 @@ def run_extraction(prompt_id: Optional[str] = None, file_id: Optional[str] = Non
 
         result: ExtractionResult = response.output_parsed
         json_output = result.model_dump_json(indent=2, by_alias=True, exclude_none=False)
-        # Attempt to save JSON to timestamped file next to this module for easier retrieval
+        # Attempt to save JSON to timestamped file in output folder for easier retrieval
         try:
             ts = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
-            base_dir = os.path.dirname(__file__)
+            base_dir = os.path.join(os.path.dirname(__file__), "..", "output files")
+            os.makedirs(base_dir, exist_ok=True)
             timestamped_name = f"extracted_fields-{ts}.json"
             out_path_ts = os.path.join(base_dir, timestamped_name)
             with open(out_path_ts, "w", encoding="utf-8") as f:

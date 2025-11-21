@@ -17,3 +17,4 @@ Thumbs.db
  
 # Generated extraction output
 dev_scripts/*.json
+output files/
