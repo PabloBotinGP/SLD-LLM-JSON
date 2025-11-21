@@ -1,6 +1,24 @@
-openai
-pydantic
-langgraph
-typing-extensions
+# Core LLM and API
+openai==1.108.2
+langchain-core==0.3.78
+langchain-openai==0.3.35
+langgraph==0.6.8
+
+# Data validation and serialization
+pydantic==2.11.9
+pydantic-settings==2.10.1
+
+# AWS integration
 boto3
-requests
+
+# HTTP and utilities
+requests==2.32.5
+python-dotenv==1.1.1
+typing-extensions==4.15.0
+
+# PDF processing
+PyMuPDF==1.26.4
+
+# Data processing
+numpy==2.3.3
+PyYAML==6.0.3
